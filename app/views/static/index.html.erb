@@ -1,0 +1,46 @@
+<iframe src="http://play.raptmedia.com/projects/bEGovWKR/embed?actual=1&autoplay=false&controls=overlay" width=720 height=405 scrolling=no frameborder=0 marginheight=0 marginwidth=0 webkitallowfullscreen=true mozallowfullscreen=true allowfullscreen=true><p style="text-align:center">Iframes are required to view this content.</p></iframe>
+
+
+<script type="text/javascript">
+
+		var flag_to_enter = false;
+		var node_list = null;
+		var keep_polling = true;
+
+		var default_inbound_frame = frames[0];
+		function outbound_callback(payload){
+			//console.log('outbound');
+		}
+
+		function inbound_api_ready_callback(payload){
+			// log the payload so you can see the node list that is returned
+			node_list = payload.nodes;
+			//JSON.stringify(payload);
+			var goal_node = $.grep(node_list, function(e){ return e.name == "I'm in."}).shift();
+			console.log(goal_node);
+
+			function poll() {
+				if(keep_polling){
+					setTimeout(function() {
+						$.ajax({ url: "/status", success: function(data) {
+							console.log(data);
+							if (data.status == true) {
+								console.log("JUMP!!!");
+								$('body').append(data.data);
+								keep_polling = false;
+								flixmaster.api.set_node(goal_node.id);
+								flixmaster.api.play();
+							}
+						}, dataType: "json", complete: poll });
+				    }, 1000);
+				}
+			}
+			poll();
+		}
+		
+		flixmaster_init({
+			outbound_callback: outbound_callback,
+			inbound_api_ready_callback: inbound_api_ready_callback,
+			default_inbound_frame: default_inbound_frame
+		});
+		</script>

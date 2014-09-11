@@ -55,4 +55,6 @@ Rails.application.routes.draw do
   #   end
   post 'twilio/voice' => 'twilio#voice'
   post 'twilio/sms' => 'twilio#sms'
+
+  get 'status' => 'status#check'
 end

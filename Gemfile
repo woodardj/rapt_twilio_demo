@@ -39,3 +39,4 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'twilio-ruby'
+gem 'delayed_job_active_record'

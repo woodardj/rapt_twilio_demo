@@ -1,4 +1,5 @@
 require 'twilio-ruby'
+require 'pp'
  
 class TwilioController < ApplicationController
   include Webhookable
@@ -17,6 +18,8 @@ class TwilioController < ApplicationController
   end
 
   def sms
+    pp params
+    InboundSms.delay(run_at: 5.seconds.from_now).create!(:phone => params["From"],:fulfilled => false,:data => params.to_json)
     response = Twilio::TwiML::Response.new do |r|
       r.Message 'Got it!'
     end
