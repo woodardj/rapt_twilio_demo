@@ -1,3 +1,4 @@
+<h1>Coming back from lunch&hellip;</h1>
 <iframe src="http://play.raptmedia.com/projects/bEGovWKR/embed?actual=1&autoplay=false&controls=overlay" width=720 height=405 scrolling=no frameborder=0 marginheight=0 marginwidth=0 webkitallowfullscreen=true mozallowfullscreen=true allowfullscreen=true><p style="text-align:center">Iframes are required to view this content.</p></iframe>
 
 
@@ -5,11 +6,30 @@
 
 		var flag_to_enter = false;
 		var node_list = null;
+		var started_polling = false;
 		var keep_polling = true;
+		var polling_func = null
 
 		var default_inbound_frame = frames[0];
 		function outbound_callback(payload){
-			//console.log('outbound');
+			if(!started_polling){
+				//console.log(payload.event);
+				if (payload.event == "player_action") {
+					var action = payload.action;
+					if (action.clipname == "At the gate" && action.time && !started_polling){
+						console.log("start polling");
+						started_polling = true;
+						$('body').append("<h2>If I text Cameron at ***REMOVED***, he'll let me in!</h2>");
+						polling_func();
+					}
+				} else if (payload.event == "flixmaster_attention"){
+					//console.log(payload.action);
+					if(payload.action.name == "forgot_keys"){
+						$('body').append("<h2>Crap I forgot my keycard</h2>");
+					}
+					// hi.
+				}
+			}
 		}
 
 		function inbound_api_ready_callback(payload){
@@ -23,19 +43,20 @@
 				if(keep_polling){
 					setTimeout(function() {
 						$.ajax({ url: "/status", success: function(data) {
-							console.log(data);
 							if (data.status == true) {
+								console.log(data);
 								console.log("JUMP!!!");
-								$('body').append(data.data);
+								$('body').append("<h2>Whew. Lucky break.</h2>");
+								$('body').append("<pre>"+JSON.stringify(data.data, null, 4)+"</pre>");
 								keep_polling = false;
 								flixmaster.api.set_node(goal_node.id);
 								flixmaster.api.play();
 							}
 						}, dataType: "json", complete: poll });
-				    }, 1000);
+				    }, 1500);
 				}
 			}
-			poll();
+			polling_func = poll;
 		}
 		
 		flixmaster_init({

@@ -19,9 +19,10 @@ class TwilioController < ApplicationController
 
   def sms
     pp params
-    InboundSms.delay(run_at: 5.seconds.from_now).create!(:phone => params["From"],:fulfilled => false,:data => params.to_json)
+    InboundSms.delay(run_at: 1.seconds.from_now).create!(:phone => params["From"],:fulfilled => false,:data => params.to_json)
     response = Twilio::TwiML::Response.new do |r|
-      r.Message 'Got it!'
+      #r.Message "Hiya buddy!"
+      r.Message "I'll be right there."
     end
 
     render_twiml response    
