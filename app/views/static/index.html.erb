@@ -19,7 +19,7 @@
 					if (action.clipname == "At the gate" && action.time && !started_polling){
 						console.log("start polling");
 						started_polling = true;
-						$('body').append("<h2>If I text Cameron at ***REMOVED***, he'll let me in!</h2>");
+						$('body').append("<h2>If I text Cameron at **REMOVED**, he'll let me in!</h2>");
 						polling_func();
 					}
 				} else if (payload.event == "flixmaster_attention"){
